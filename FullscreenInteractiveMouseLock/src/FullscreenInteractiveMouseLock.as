@@ -29,7 +29,7 @@ public class FullscreenInteractiveMouseLock extends Sprite
 
 	private var pinwheel:Sprite;
 
-	private var isFullscreen:Boolean = false;
+	private var isFirstTime:Boolean = false;
 	public function FullscreenInteractiveMouseLock()
 	{
 		addEventListener(Event.ADDED_TO_STAGE, addedToStageHandler);
@@ -61,8 +61,9 @@ public class FullscreenInteractiveMouseLock extends Sprite
 	
 	protected function mouseMoveHandler(event:MouseEvent):void
 	{
-		if (isFullscreen == true && stage.mouseLock == false)
+		if (isFirstTime == true && stage.mouseLock == false)
 		{
+			isFirstTime = false;
 			errorMessage.text = "here: " + stage.mouseLock;
 			stage.mouseLock = true;
 		}
@@ -82,7 +83,7 @@ public class FullscreenInteractiveMouseLock extends Sprite
 	{
 		if (event.type == FullScreenEvent.FULL_SCREEN_INTERACTIVE_ACCEPTED)
 		{
-			isFullscreen = true;
+			isFirstTime = true;
 			stage.mouseLock = true;
 			
 			trace("["+event.type+"]Set mouse lock: " + stage.mouseLock);
@@ -90,7 +91,7 @@ public class FullscreenInteractiveMouseLock extends Sprite
 		}
 		else
 		{
-			isFullscreen = false;
+			isFirstTime = false;
 		}
 	}
 	
