@@ -1,3 +1,25 @@
+//*****************************************
+// 
+//  Copyright (c) 2012 Renaun Erickson (renaun.com)
+//	
+//	Permission is hereby granted, free of charge, to any person obtaining a copy of 
+//	this software and associated documentation files (the "Software"), to deal in 
+//	the Software without restriction, including without limitation the rights to 
+//	use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies 
+//	of the Software, and to permit persons to whom the Software is furnished to do so, 
+//	subject to the following conditions:
+//	
+//	The above copyright notice and this permission notice shall be included in all 
+//	copies or substantial portions of the Software.
+//	
+//	THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, 
+//	INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR 
+//	PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE 
+//	FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT 
+//	OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR 
+//	OTHER DEALINGS IN THE SOFTWARE.
+//
+//*****************************************
 package
 {
 import flash.display.GraphicsPathCommand;
@@ -12,28 +34,34 @@ import flash.text.TextField;
 import flash.text.TextFormat;
 
 import flashx.textLayout.formats.TextAlign;
-
 [SWF(backgroundColor="333388")]
 public class FullscreenInteractiveMouseLock extends Sprite
 {
-
-	private var format:TextFormat;
-
-	private var errorMessage:TextField;
-
-	private var lastX:Number;
-
-	private var deltaX:Number;
-
-	private var button:Sprite;
-
-	private var pinwheel:Sprite;
-
-	private var isFirstTime:Boolean = false;
+	
 	public function FullscreenInteractiveMouseLock()
 	{
 		addEventListener(Event.ADDED_TO_STAGE, addedToStageHandler);
 	}
+	
+	private var format:TextFormat;
+	
+	private var errorMessage:TextField;
+	
+	private var lastX:Number;
+	
+	private var deltaX:Number;
+	
+	private var button:Sprite;
+	
+	private var pinwheel:Sprite;
+	
+	
+	//*****
+	// For Cyril (Flash Player 11.3) this is a bug that mouseLock does not get set to true, 
+	// The workaround is using isFirstTime approach
+	// Flash Player 11.4 will have a fix for this behavior
+	//*****
+	private var isFirstTime:Boolean = false;
 	
 	protected function addedToStageHandler(event:Event):void
 	{
@@ -84,7 +112,12 @@ public class FullscreenInteractiveMouseLock extends Sprite
 		if (event.type == FullScreenEvent.FULL_SCREEN_INTERACTIVE_ACCEPTED)
 		{
 			isFirstTime = true;
-			stage.mouseLock = true;
+			//*****
+			// For Cyril (Flash Player 11.3) this is a bug that mouseLock does not get set to true, 
+			// The workaround is using isFirstTime approach
+			// Flash Player 11.4 will have a fix for this behavior
+			//*****
+			stage.mouseLock = true; 
 			
 			trace("["+event.type+"]Set mouse lock: " + stage.mouseLock);
 			errorMessage.text = "["+event.type+"]Set mouse lock: " + stage.mouseLock;

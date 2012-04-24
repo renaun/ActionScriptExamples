@@ -7,7 +7,7 @@ import flash.system.ApplicationDomain;
 import flash.utils.ByteArray;
 import flash.utils.Endian;
 
-[SWF(width="400",height="160",backgroundColor="0x333333")]
+[SWF(width="400",height="160",backgroundColor="0x333333",myVar="hi")]
 public class PremiumFeatureCheck extends Sprite
 {
 	public function PremiumFeatureCheck()
