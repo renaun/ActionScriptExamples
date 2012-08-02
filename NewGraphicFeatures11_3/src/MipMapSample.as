@@ -149,9 +149,9 @@ package
 			mcMole.x = 20;
 			mcMole.y = 60;
 			bData = DrawBitmapWithQuality.drawFromMovieClipForMipMaps(mcMole, 0);
-			texture = context3D.createTexture(bData.width, bData.height, Context3DTextureFormat.BGRA, false, 6);
+			texture = context3D.createTexture(bData.width, bData.height, Context3DTextureFormat.BGRA, false, 8);
 			//texture.uploadFromBitmapData( bData, 0 );
-			for (var i:int = 6; i <= 8; i++)
+			for (var i:int = 8; i <= 8; i++)
 			{
 				bData = DrawBitmapWithQuality.drawFromMovieClipForMipMaps(mcMole, i);
 				trace("bitmap["+i+"]: " + bData.width+"x"+bData.height);
@@ -288,6 +288,12 @@ package
 		
 		public function uploadMipMap(mipMapLevel:int):void
 		{
+			//for (var i:int = 0; i <= 3; i++)
+			//{
+			//	bData = DrawBitmapWithQuality.drawFromMovieClipForMipMaps(mcMole, i);
+			//	trace("bitmap["+i+"]: " + bData.width+"x"+bData.height);
+			//	texture.uploadFromBitmapData( bData, i );
+			//}
 				bData = DrawBitmapWithQuality.drawFromMovieClipForMipMaps(mcMole, mipMapLevel);
 				trace("bitmap["+mipMapLevel+"]: " + bData.width+"x"+bData.height);
 				texture.uploadFromBitmapData( bData, mipMapLevel );
