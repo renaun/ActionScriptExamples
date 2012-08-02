@@ -149,9 +149,9 @@ package
 			mcMole.x = 20;
 			mcMole.y = 60;
 			bData = DrawBitmapWithQuality.drawFromMovieClipForMipMaps(mcMole, 0);
-			texture = context3D.createTexture(bData.width, bData.height, Context3DTextureFormat.BGRA, false, 8);
+			texture = context3D.createTexture(bData.width, bData.height, Context3DTextureFormat.BGRA, false, 4);
 			//texture.uploadFromBitmapData( bData, 0 );
-			for (var i:int = 8; i <= 8; i++)
+			for (var i:int = 4; i <= 8; i++)
 			{
 				bData = DrawBitmapWithQuality.drawFromMovieClipForMipMaps(mcMole, i);
 				trace("bitmap["+i+"]: " + bData.width+"x"+bData.height);
