@@ -25,6 +25,7 @@ package
 	 * @author Marco Scabia
 	 * http://iflash3d.com
 	 * 
+	 * Texture Streaming changes by Renaun Erickson @renaun / renaun.com
 	 */
 	public class MipMapSample extends Sprite
 	{
@@ -57,6 +58,8 @@ package
 		private var frameCount:int = 0;
 
 		private var bData:BitmapData;
+
+		private var textureBitmap:Bitmap;
 		
 		public function MipMapSample()
 		{
@@ -113,6 +116,7 @@ package
 				case 56:
 				case 57:
 				case 58:
+					// if (!isSmaller)
 					uploadMipMap(e.keyCode-49);
 					break
 					
@@ -144,18 +148,32 @@ package
 			// offset 0, count 6
 			indexBuffer.uploadFromVector (Vector.<uint>([0, 1, 2, 2, 3, 0]), 0, 6);
 			
-			//var bitmap:Bitmap = new TextureBitmap();
-			mcMole = new MoleAnimation();
-			mcMole.x = 20;
-			mcMole.y = 60;
-			mcMole.stop();
-			bData = DrawBitmapWithQuality.drawFromMovieClipForMipMaps(mcMole, 0);
-			texture = context3D.createTexture(bData.width, bData.height, Context3DTextureFormat.BGRA, false, 4);
+			textureBitmap = new TextureBitmap();
+			/* Example of conditional logic to only create textures for 128x128 if its a smaller resolution
+			// This effectively removes the 512x512 and 256x256 texture memory on the smaller device, for some savings
+			if (isSmaller)
+				bData = createMipMapLevelFromBitmap(textureBitmap, 2); // width/4
+				texture = context3D.createTexture(bData.width, bData.height, Context3DTextureFormat.BGRA, false);
+				bData.dispose();
+				for (var i:int = 2; i <= 9; i++)
+				{
+					bData = createMipMapLevelFromBitmap(textureBitmap, i);
+					texture.uploadFromBitmapData( bData, i-2 ); // Shift mipmap levels to map to 0 index
+					bData.dispose();
+				}
+			}
+			else below code
+			*/
 			
-			for (var i:int = 4; i <= 8; i++)
+			// Allowing you to include the 128x128 and down textures and only pull in the higher resolution textures for larger screens
+			bData = createMipMapLevelFromBitmap(textureBitmap, 0);
+			texture = context3D.createTexture(bData.width, bData.height, Context3DTextureFormat.BGRA, false,2);
+			
+			for (var i:int = 2; i <= 9; i++)
 			{
-				bData = DrawBitmapWithQuality.drawFromMovieClipForMipMaps(mcMole, i);
+				bData = createMipMapLevelFromBitmap(textureBitmap, i);
 				texture.uploadFromBitmapData( bData, i );
+				bData.dispose();
 			}
 			
 			var vertexShaderAssembler : AGALMiniAssembler = new AGALMiniAssembler();
@@ -228,28 +246,7 @@ package
 			viewTransform.copyFrom(cameraWorldTransform);
 			viewTransform.invert();
 		}
-		
-		public function uploadTextureWithMipMaps( tex:Texture, originalImage:BitmapData ):void 
-		{		
-			var mipWidth:int = originalImage.width;
-			var mipHeight:int = originalImage.height;
-			var mipLevel:int = 0;
-			var mipImage:BitmapData = new BitmapData( originalImage.width, originalImage.height );
-			var scaleTransform:Matrix = new Matrix();
 			
-			while ( mipWidth > 0 && mipHeight > 0 )
-			{
-				mipImage.draw( originalImage, scaleTransform, null, null, null, true );
-				
-				trace("mipLevel: " + mipLevel + " - " + mipWidth+"x"+mipHeight + " - " + mipImage.width+"x"+mipImage.height);
-				tex.uploadFromBitmapData( mipImage, mipLevel );
-				scaleTransform.scale( 0.5, 0.5 );
-				mipLevel++;
-				mipWidth >>= 1;
-				mipHeight >>= 1;
-			}
-			mipImage.dispose();
-		}			
 		
 		protected function onRender(e:Event):void
 		{
@@ -285,8 +282,25 @@ package
 		
 		public function uploadMipMap(mipMapLevel:int):void
 		{
-			bData = DrawBitmapWithQuality.drawFromMovieClipForMipMaps(mcMole, mipMapLevel);
+			bData = createMipMapLevelFromBitmap(textureBitmap, mipMapLevel);
 			texture.uploadFromBitmapData( bData, mipMapLevel );
+			bData.dispose();
+		}
+		
+		public function createMipMapLevelFromBitmap(mc:Bitmap, mipLevel:int):BitmapData
+		{
+			var scale:Number = 1;
+			var matrix:Matrix = new Matrix();
+			while (mipLevel > 0)
+			{
+				scale = scale / 2;
+				mipLevel--;
+			}
+			trace("mipLevel:" + mc.width*scale + "/"+ mc.height*scale);
+			var bitdata:BitmapData = new BitmapData(mc.width*scale , mc.height*scale);
+			matrix.scale(scale, scale);
+			bitdata.draw(mc, matrix, null, null, null, true);
+			return bitdata;
 		}
 	}
 }
