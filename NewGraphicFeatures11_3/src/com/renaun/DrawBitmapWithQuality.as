@@ -9,7 +9,6 @@ import flash.geom.Matrix;
 public class DrawBitmapWithQuality
 {
 
-	private static var matrix:Matrix = new Matrix();
 	public static function drawFromMovieClip(mc:MovieClip):BitmapData
 	{
 		var bitdata:BitmapData = new BitmapData(mc.width, mc.height, true, 0xff0000);
@@ -32,15 +31,16 @@ public class DrawBitmapWithQuality
 	{
 		// 256x128, 128x64, 64x32, 32x16, 16x8, 8x4, 4x2, 2x1 = 8 mip levels
 		var scale:Number = 1;
+		var matrix:Matrix = new Matrix();
 		while (mipLevel > 0)
 		{
 			scale = scale / 2;
 			mipLevel--;
 		}
-		var bitdata:BitmapData = new BitmapData(256*scale , 256*scale, true, 0xff0000);
+		var bitdata:BitmapData = new BitmapData(256*scale , 256*scale);
 		trace("scale: " + scale)
 		matrix.scale(scale, scale);
-		bitdata.drawWithQuality(mc, matrix, null, null, null, false, StageQuality.HIGH);
+		bitdata.draw(mc, matrix, null, null, null, true);
 		return bitdata;
 	}
 }

@@ -148,18 +148,15 @@ package
 			mcMole = new MoleAnimation();
 			mcMole.x = 20;
 			mcMole.y = 60;
+			mcMole.stop();
 			bData = DrawBitmapWithQuality.drawFromMovieClipForMipMaps(mcMole, 0);
 			texture = context3D.createTexture(bData.width, bData.height, Context3DTextureFormat.BGRA, false, 4);
-			//texture.uploadFromBitmapData( bData, 0 );
+			
 			for (var i:int = 4; i <= 8; i++)
 			{
 				bData = DrawBitmapWithQuality.drawFromMovieClipForMipMaps(mcMole, i);
-				trace("bitmap["+i+"]: " + bData.width+"x"+bData.height);
 				texture.uploadFromBitmapData( bData, i );
 			}
-			
-			
-			//uploadTextureWithMipMaps(texture, bitmap.bitmapData);
 			
 			var vertexShaderAssembler : AGALMiniAssembler = new AGALMiniAssembler();
 			vertexShaderAssembler.assemble( Context3DProgramType.VERTEX,
@@ -288,15 +285,8 @@ package
 		
 		public function uploadMipMap(mipMapLevel:int):void
 		{
-			//for (var i:int = 0; i <= 3; i++)
-			//{
-			//	bData = DrawBitmapWithQuality.drawFromMovieClipForMipMaps(mcMole, i);
-			//	trace("bitmap["+i+"]: " + bData.width+"x"+bData.height);
-			//	texture.uploadFromBitmapData( bData, i );
-			//}
-				bData = DrawBitmapWithQuality.drawFromMovieClipForMipMaps(mcMole, mipMapLevel);
-				trace("bitmap["+mipMapLevel+"]: " + bData.width+"x"+bData.height);
-				texture.uploadFromBitmapData( bData, mipMapLevel );
+			bData = DrawBitmapWithQuality.drawFromMovieClipForMipMaps(mcMole, mipMapLevel);
+			texture.uploadFromBitmapData( bData, mipMapLevel );
 		}
 	}
 }
