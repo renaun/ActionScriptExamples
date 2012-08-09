@@ -1,0 +1,36 @@
+{"frames": {
+
+"shmupBG_bot.jpg":
+{
+	"frame": {"x":0,"y":0,"w":600,"h":799},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":600,"h":799},
+	"sourceSize": {"w":600,"h":799}
+},
+"shmupBG_mid.jpg":
+{
+	"frame": {"x":600,"y":0,"w":600,"h":799},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":600,"h":799},
+	"sourceSize": {"w":600,"h":799}
+},
+"shmupBG_top.jpg":
+{
+	"frame": {"x":1200,"y":0,"w":600,"h":799},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":600,"h":799},
+	"sourceSize": {"w":600,"h":799}
+}},
+"meta": {
+	"app": "http://www.texturepacker.com",
+	"version": "1.0",
+	"image": "FloorTexture.png",
+	"format": "RGBA8888",
+	"size": {"w":2048,"h":1024},
+	"scale": "1",
+	"smartupdate": "$TexturePacker:SmartUpdate:64f5beb818183c1305723d7248ec411e$"
+}
+}

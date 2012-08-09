@@ -1,0 +1,28 @@
+{"frames": {
+
+"cloudsFORE_bot.png":
+{
+	"frame": {"x":0,"y":0,"w":600,"h":800},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":600,"h":800},
+	"sourceSize": {"w":600,"h":800}
+},
+"cloudsFORE_top.png":
+{
+	"frame": {"x":0,"y":800,"w":600,"h":800},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":600,"h":800},
+	"sourceSize": {"w":600,"h":800}
+}},
+"meta": {
+	"app": "http://www.texturepacker.com",
+	"version": "1.0",
+	"image": "SkyTexture.png",
+	"format": "RGBA8888",
+	"size": {"w":1024,"h":2048},
+	"scale": "1",
+	"smartupdate": "$TexturePacker:SmartUpdate:ff7f3c4f11e953c4eafce4b29ef2cad6$"
+}
+}

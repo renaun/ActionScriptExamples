@@ -1,0 +1,84 @@
+{"frames": {
+
+"EMP.png":
+{
+	"frame": {"x":0,"y":0,"w":460,"h":459},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":460,"h":459},
+	"sourceSize": {"w":460,"h":459}
+},
+"MEGAlaser_Flare.png":
+{
+	"frame": {"x":0,"y":863,"w":229,"h":94},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":229,"h":94},
+	"sourceSize": {"w":229,"h":94}
+},
+"bad bullet/bad_bullet.png":
+{
+	"frame": {"x":462,"y":0,"w":45,"h":45},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":45,"h":45},
+	"sourceSize": {"w":45,"h":45}
+},
+"bad_bullet.png":
+{
+	"frame": {"x":462,"y":0,"w":45,"h":45},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":45,"h":45},
+	"sourceSize": {"w":45,"h":45}
+},
+"pickup_X2.png":
+{
+	"frame": {"x":231,"y":863,"w":112,"h":112},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":112,"h":112},
+	"sourceSize": {"w":112,"h":112}
+},
+"pickup_megalaser.png":
+{
+	"frame": {"x":302,"y":689,"w":112,"h":112},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":112,"h":112},
+	"sourceSize": {"w":112,"h":112}
+},
+"pickup_rocket.png":
+{
+	"frame": {"x":302,"y":575,"w":112,"h":112},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":112,"h":112},
+	"sourceSize": {"w":112,"h":112}
+},
+"pickup_shield.png":
+{
+	"frame": {"x":302,"y":461,"w":112,"h":112},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":112,"h":112},
+	"sourceSize": {"w":112,"h":112}
+},
+"vignette.png":
+{
+	"frame": {"x":0,"y":461,"w":300,"h":400},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":300,"h":400},
+	"sourceSize": {"w":300,"h":400}
+}},
+"meta": {
+	"app": "http://www.texturepacker.com",
+	"version": "1.0",
+	"image": "empTexture.png",
+	"format": "RGBA8888",
+	"size": {"w":512,"h":1024},
+	"scale": "1",
+	"smartupdate": "$TexturePacker:SmartUpdate:01b4242270ad26a8fdf03724f3e51fa4$"
+}
+}
