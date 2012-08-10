@@ -22,7 +22,7 @@ package
 		{
 			
 			var info:NativeProcessStartupInfo = new NativeProcessStartupInfo();
-			var shellScript:File = new File("/Code/test2.sh");
+			var shellScript:File = new File("/Code/test.sh");
 			trace("shellScript.exists: " + shellScript.exists);
 			var file:File = new File("/bin/bash");
 			info.executable = file;
