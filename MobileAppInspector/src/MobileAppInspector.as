@@ -11,7 +11,7 @@ import app.display.Main;
  *		It also assumes iTune's Mac mobile applications directory so pretty much a Mac only app at this point.
  * 
  */
-[SWF(width="480",height="640",frameRate="60",backgroundColor="#404040")]
+[SWF(width="640",height="640",frameRate="60",backgroundColor="#404040")]
 public class MobileAppInspector extends StarlingWebMainSprite
 {
 	public function MobileAppInspector()

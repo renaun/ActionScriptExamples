@@ -47,7 +47,9 @@ public class Main extends FeathersControl
 	public static var processDataByFilename:Dictionary = new Dictionary();
 	public var processNative:NativeProcess;
 	protected var lastFile:File;
-	protected var grepChecks:Array = ["Adobe AIR for iOS [0-9].[0-9].[0-9].\\{4\\}[0-9]", "renderMode", "UnityEngine","CoronaSDK", "ns.adobe.com/air/application"];
+	protected var grepChecks:Array = ["Adobe AIR for iOS [0-9].[0-9].[0-9].\\{4\\}[0-9]", "renderMode", "UnityEngine","CoronaSDK",
+							"ns.adobe.com/air/application", "starling.display.Sprite"];
+	protected var zipgrepFilter:Array = ["", "*.xml", "","","*.xml", "*app/*"];
 	protected var grepCheckIndex:int = 0;
 	public var info:NativeProcessStartupInfo;
 	public var filesToProcess:Vector.<File>;
@@ -58,6 +60,7 @@ public class Main extends FeathersControl
 	public static const GREP_RENDER_MODE:int = 1;
 	public static const GREP_UNITY:int = 2;
 	public static const GREP_CORONA:int = 3;
+	public static const GREP_STARLING:int = 5;
 	
 	// Theme and Helper Classes
 	private var theme:MainTheme;
@@ -96,7 +99,14 @@ public class Main extends FeathersControl
 	{
 		if (!file)
 			return;
-		trace("START PROCESSING : " + file.name);
+		trace("START PROCESSING : " + file.name + " - " + grepCheckIndex);
+		/*
+		if (file.name.indexOf("Whale") == -1)
+		{
+			processFile(filesToProcess.shift());
+			return;
+		}
+		*/
 		if (processNative && processNative.running)
 			return;
 
@@ -108,12 +118,13 @@ public class Main extends FeathersControl
 		var args:Vector.<String> = new Vector.<String>();
 		
 		if (grepCheckIndex == GREP_RENDER_MODE
-			|| grepCheckIndex == GREP_AIR_DEV)
+			|| grepCheckIndex == GREP_AIR_DEV
+			|| grepCheckIndex == GREP_STARLING)
 		{
 			info.executable = EXEC_ZIP_GREP;
 			args.push(grepChecks[grepCheckIndex]);
 			args.push(file.nativePath);
-			args.push("*.xml");
+			args.push(zipgrepFilter[grepCheckIndex]);
 		}
 		else
 		{
@@ -165,6 +176,10 @@ public class Main extends FeathersControl
 		{
 			grepCheckIndex = -1;
 		}
+		else if (grepCheckIndex == GREP_STARLING && output == "")
+		{
+			grepCheckIndex = -1;
+		}
 		else if (grepCheckIndex == GREP_UNITY && output == "")
 		{
 			grepCheckIndex = GREP_CORONA;
@@ -173,8 +188,7 @@ public class Main extends FeathersControl
 		{
 			grepCheckIndex = GREP_AIR_DEV;
 		}
-		if (grepCheckIndex == GREP_RENDER_MODE || grepCheckIndex == GREP_UNITY
-			|| grepCheckIndex == GREP_CORONA || grepCheckIndex == GREP_AIR_DEV)
+		if (grepCheckIndex > 0)
 		{
 			processFile(lastFile);
 		}
@@ -228,6 +242,12 @@ public class Main extends FeathersControl
 				renderModeValue = renderModeValue.replace("</re","");
 				processDataByFilename[lastFile.name].renderModeAIR = renderModeValue;
 				//if (gpuCount.length < 
+				grepCheckIndex = GREP_STARLING;
+			}
+			else if (grepCheckIndex == GREP_STARLING)
+			{
+				
+				processDataByFilename[lastFile.name].versionAIR += " Starling";
 				grepCheckIndex = -1;
 			}
 			else if (grepCheckIndex == GREP_UNITY)
