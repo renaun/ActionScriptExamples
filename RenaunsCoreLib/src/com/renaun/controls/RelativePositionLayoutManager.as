@@ -2,10 +2,14 @@ package com.renaun.controls
 {
 	import flash.utils.Dictionary;
 	
+	import feathers.core.DisplayListWatcher;
 	import feathers.core.FeathersControl;
+	import feathers.core.IFeathersControl;
 	
+	import starling.display.DisplayObject;
 	import starling.display.Stage;
 	import starling.events.Event;
+	import starling.events.ResizeEvent;
 
 /*
 	Add display objects here
@@ -45,7 +49,7 @@ public class RelativePositionLayoutManager
 		root.height = stage.stageHeight;
 	}
 	
-	public function setPosition(control:FeathersControl, positionType:String, value:Number):void
+	public function setPosition(control:DisplayObject, positionType:String, value:Number):void
 	{
 		if (value != value) // isNaN check
 			return;
@@ -67,24 +71,25 @@ public class RelativePositionLayoutManager
 			break;
 		}
 		// Extra step for convience
-		if (control.width == 0 && control.height == 0)
-			control.validate();
+		if (control.width == 0 && control.height == 0 && control is FeathersControl)
+			(control as FeathersControl).validate();
 		// valid property
 		if (control.parent is FeathersControl)
 		{
 			var featherControl:FeathersControl = control.parent as FeathersControl;
-			featherControl.onResize.add(parentResizeHandler);
+			//featherControl.onResize.add(parentResizeHandler);
+			featherControl.addEventListener(ResizeEvent.RESIZE, parentResizeHandler);
 			if (!controlsByParent[featherControl])
-				controlsByParent[featherControl] = new Vector.<FeathersControl>();
-			if ((controlsByParent[featherControl] as Vector.<FeathersControl>).indexOf(control) == -1)
+				controlsByParent[featherControl] = new Vector.<DisplayObject>();
+			if ((controlsByParent[featherControl] as Vector.<DisplayObject>).indexOf(control) == -1)
 			{
-				(controlsByParent[featherControl] as Vector.<FeathersControl>).push(control);
+				(controlsByParent[featherControl] as Vector.<DisplayObject>).push(control);
 			}
 		}
 		layout(control, positionType, value);
 	}
 	
-	protected function layoutAll(control:FeathersControl):void
+	protected function layoutAll(control:DisplayObject):void
 	{
 		var props:Object = controls[control];
 		for (var positionType:String in props)
@@ -92,34 +97,35 @@ public class RelativePositionLayoutManager
 			layout(control, positionType, props[positionType]);
 		}
 	}
-	protected function layout(control:FeathersControl, positionType:String, value:Number):void
+	protected function layout(control:DisplayObject, positionType:String, value:Number):void
 	{
 		switch (positionType)
 		{
 			case LEFT:
-				control.x += value;
+				control.x = control.parent.x + value;
 				if (controls[control][RIGHT] != undefined)
-					control.width = value + (control.parent.width - controls[control][RIGHT]);
+					control.width = control.parent.width - value - controls[control][RIGHT];
 				break;
 			case RIGHT:
-				control.x -= value;
 				if (controls[control][LEFT] != undefined)
-					control.width = controls[control][LEFT] + (control.parent.width - value);
+					control.width = control.parent.width - value - controls[control][LEFT];
+				else
+					control.x = control.parent.width - value - control.width;
 				break;
 			case TOP:
-				control.y += value;
+				control.y = control.parent.y + value;
 				if (controls[control][BOTTOM] != undefined)
 				{
-					control.height = value + (control.parent.height - controls[control][BOTTOM]);
+					control.height = (control.parent.height - controls[control][BOTTOM]) - value;
 				}
 				break;
 			case BOTTOM:
 				if (controls[control][TOP] != undefined)
 				{
-					control.height = value + (control.parent.height - controls[control][TOP]);
+					control.height = (control.parent.height - controls[control][TOP]) - value;
 				}
 				else
-					control.y -= value;
+					control.y = control.parent.height - value - control.height;
 				break;
 			case HORIZONTAL_CENTER:
 				control.x = (control.parent.width/2 - control.width/2) + value;
@@ -139,7 +145,7 @@ public class RelativePositionLayoutManager
 	 * 	Use the format {left: 2, right: 3} etc...
 	 * 
 	 */
-	public function setPositionValues(control:FeathersControl, positions:Object):void
+	public function setPositionValues(control:DisplayObject, positions:Object):void
 	{
 		if (positions.fill)
 		{
@@ -152,18 +158,27 @@ public class RelativePositionLayoutManager
 		}
 	}
 	
-	protected function parentResizeHandler(target:FeathersControl, oldWidth:Number, oldHeight:Number):void
+	//protected function parentResizeHandler(target:FeathersControl, oldWidth:Number, oldHeight:Number):void
+	protected function parentResizeHandler(event:Event):void
 	{
-		if (controlsByParent[target])
+		if (controlsByParent[event.target])
 		{
-			var items:Vector.<FeathersControl> = (controlsByParent[target] as Vector.<FeathersControl>);
+			var items:Vector.<DisplayObject> = (controlsByParent[event.target] as Vector.<DisplayObject>);
 			for (var i:int = 0; i < items.length; i++) 
 			{
 				layoutAll(items[i]);
-				(items[i] as FeathersControl).invalidate();
+				if (items[i] is FeathersControl)
+					(items[i] as FeathersControl).invalidate();
 			}
 			
 		}
+	}
+	
+	public function invalidate(control:DisplayObject):void
+	{
+		layoutAll(control);
+		if (control is FeathersControl)
+			(control as FeathersControl).invalidate();
 	}
 	
 }

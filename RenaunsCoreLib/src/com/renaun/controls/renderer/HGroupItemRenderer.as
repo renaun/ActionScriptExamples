@@ -7,9 +7,6 @@ package com.renaun.controls.renderer
 	import feathers.controls.renderers.IListItemRenderer;
 	import feathers.core.FeathersControl;
 	
-	import org.osflash.signals.ISignal;
-	import org.osflash.signals.Signal;
-	
 	import starling.display.DisplayObject;
 	import starling.display.Quad;
 	
@@ -124,14 +121,14 @@ package com.renaun.controls.renderer
 			}
 			if(this._owner)
 			{
-				List(this._owner).onScroll.remove(owner_onScroll);
+				//List(this._owner).onScroll.remove(owner_onScroll);
 			}
 			this._owner = value;
 			if(this._owner)
 			{
 				const list:List = List(this._owner);
 				//this.isToggle = list.isSelectable;
-				list.onScroll.add(owner_onScroll);
+				//list.onScroll.add(owner_onScroll);
 			}
 			this.invalidate(INVALIDATION_FLAG_DATA);
 		}
@@ -177,14 +174,14 @@ package com.renaun.controls.renderer
 		/**
 		 * @private
 		 */
-		protected var _onChange:Signal = new Signal(Button);
+		//protected var _onChange:Signal = new Signal(Button);
 		
 		/**
 		 * Dispatched when the button is selected or unselected.
 		 */
-		public function get onChange():ISignal
+		public function get onChange():*
 		{
-			return this._onChange;
+			//return this._onChange;
 		}
 	}
 }

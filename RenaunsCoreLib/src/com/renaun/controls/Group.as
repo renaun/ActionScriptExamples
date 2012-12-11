@@ -1,9 +1,9 @@
 package com.renaun.controls
 {
-import feathers.controls.Label;
 import feathers.core.FeathersControl;
 
-import starling.display.DisplayObject;
+import starling.events.Event;
+import starling.events.ResizeEvent;
 
 public class Group extends FeathersControl
 {
@@ -34,7 +34,8 @@ public class Group extends FeathersControl
 	{
 		addChild(item);
 		children.push(item);
-		item.onResize.add(resizeHandler);
+		item.addEventListener(ResizeEvent.RESIZE, resizeHandler);
+		//item.onResize.add(resizeHandler);
 		childrenPercentValues.push(percentValue);
 		measure();
 		invalidate();
@@ -51,7 +52,8 @@ public class Group extends FeathersControl
 	{
 	}
 	
-	protected function resizeHandler(target:FeathersControl, oldWidth:Number, oldHeight:Number):void
+	protected function resizeHandler(event:Event):void
+	//protected function resizeHandler(target:FeathersControl, oldWidth:Number, oldHeight:Number):void
 	{
 		/*
 		if (target is Label)
