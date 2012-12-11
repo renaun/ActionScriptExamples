@@ -42,6 +42,8 @@ import feathers.text.BitmapFontTextFormat;
 
 import starling.display.Image;
 import starling.display.Quad;
+import starling.events.TouchEvent;
+import starling.events.TouchPhase;
 import starling.textures.Texture;
 
 public class Main extends FeathersControl
@@ -63,6 +65,7 @@ public class Main extends FeathersControl
 
 	private var password:TextInput;
 	private var settings:SharedObject;
+	private var lastFile:File;
 	
 	private function addedToStageHandler():void
 	{
@@ -80,6 +83,7 @@ public class Main extends FeathersControl
 		addChild(renderer);
 		
 		var sl:Image = new Image(Texture.fromBitmap(new MainTheme.SCOUT_LOGO()));
+		sl.addEventListener(TouchEvent.TOUCH, touchEventHandler);
 		addChild(sl);
 		
 		var bg:Quad = new Quad(100, 100, 0x2d2d2d);
@@ -120,7 +124,7 @@ public class Main extends FeathersControl
 		appCountLabel.text = "How To Use SWF Scout Enabler:\n\n1. Set File Suffix and Password (optional) input values\n" +
 			"2. Drag SWF into SWF Scout Enabler\n" + "" +
 			"3. Enabled SWF is created in same folder as filename + \""+suffix.text+"\" + .swf\n" +
-			"Note: To override file set File Suffix to \"\"";
+			"\nTIPs: To override file set File Suffix to \"\"\nClick on top right image to reprocess last file";
 		addChild(appCountLabel);
 		
 		errorText = new Label();
@@ -136,7 +140,7 @@ public class Main extends FeathersControl
 		positionManager.setPositionValues(renderer, {top: 20, left: 10});
 		positionManager.setPositionValues(sl, {top: 6, right: 12});
 		positionManager.setPosition(appCountLabel, RelativePositionLayoutManager.HORIZONTAL_CENTER, 0);
-		positionManager.setPosition(appCountLabel, RelativePositionLayoutManager.VERTICAL_CENTER, 0);
+		positionManager.setPosition(appCountLabel, RelativePositionLayoutManager.VERTICAL_CENTER, 20);
 		positionManager.setPositionValues(credits, {bottom: 10, left: 10});
 		positionManager.setPositionValues(bg, {top: 60, bottom: 40, left: 10, right: 10});
 		
@@ -149,11 +153,18 @@ public class Main extends FeathersControl
 		positionManager.setPosition(errorText, RelativePositionLayoutManager.BOTTOM, 70);
 	}
 	
+	private function touchEventHandler(event:TouchEvent):void
+	{
+		if (event.touches.length > 0 && event.touches[0].phase == TouchPhase.ENDED && lastFile)
+			processFile(lastFile);
+	}
+	
 	private function changeHandler():void
 	{
-		
-		appCountLabel.text = "How To Use SWF Scout Enabler:\n\n1. Drag SWF into SWF Scout Enabler\n" + "" +
-			"2. Enabled SWF is created in same folder with filename suffix of filename + \""+suffix.text+"\" + .swf\n";
+		appCountLabel.text = "How To Use SWF Scout Enabler:\n\n1. Set File Suffix and Password (optional) input values\n" +
+			"2. Drag SWF into SWF Scout Enabler\n" + "" +
+			"3. Enabled SWF is created in same folder as filename + \""+suffix.text+"\" + .swf\n" +
+			"\nTIPs: To override file set File Suffix to \"\"\nClick on top right image to reprocess last file";
 		
 		positionManager.invalidate(appCountLabel);
 	}
@@ -169,6 +180,7 @@ public class Main extends FeathersControl
 			
 			(errorText.textRendererProperties.textFormat as BitmapFontTextFormat).color = 0xffffff;
 			errorText.text = "Processing: " + file.nativePath;
+			lastFile = file;
 			var swfTagHelper:SWFTagHelper = new SWFTagHelper(file);
 			swfTagHelper.addEventListener(ErrorEvent.ERROR, errorHandler);
 			var success:String = swfTagHelper.process(suffix.text, password.text);
