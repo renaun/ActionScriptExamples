@@ -1,0 +1,12 @@
+This AIR application helps you to set the advanced telemetry SWF tag on SWF files. 
+This is useful for pre-existing SWFs or SWF not created with the newer asc2 compiler.
+For example Flex applications.
+
+Project references https://github.com/renaun/ActionScriptExamples/tree/master/RenaunsCoreLib
+
+The Application uses Feathers UI library for the UI.
+
+Implementation based off of the python script found here:
+https://github.com/adamcath/telemetry-utils/blob/master/add-opt-in.py
+
+Support for AS2 SWFs has a bug in Adobe Scout at the moment.

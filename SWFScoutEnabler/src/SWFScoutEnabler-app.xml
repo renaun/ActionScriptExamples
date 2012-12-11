@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<application xmlns="http://ns.adobe.com/air/application/3.4">
+	<id>SWFScoutEnabler</id>
+	<filename>SWFScoutEnabler</filename>
+	<name>SWF Scout Enabler</name>
+	<versionNumber>1.0.1</versionNumber>
+	<description>Adds the Adobe Scout advanced telemetry SWF tag to a SWF file.</description>
+	<copyright>Renaun Erickson</copyright>
+	<!-- Settings for the application's initial window. Required. -->
+	<initialWindow>
+		<!-- The main SWF or HTML file of the application. Required. -->
+		<!-- Note: In Flash Builder, the SWF reference is set automatically. -->
+		<content>[This value will be overwritten by Flash Builder in the output app.xml]</content>
+		<!-- The title of the main window. Optional. -->
+		<title>SWF Scout Enabler</title>
+		<!-- The window's initial width in pixels. Optional. -->
+		<width>720</width>
+		<!-- The window's initial height in pixels. Optional. -->
+		<height>400</height>
+		<!-- The window's minimum size, specified as a width/height pair in pixels, such as "400 200". Optional. -->
+		<minSize>540 320</minSize>
+        <!-- The render mode for the app (either auto, cpu, gpu, or direct). Optional. Default auto -->
+        <renderMode>direct</renderMode>
+		<autoOrients>false</autoOrients>
+        <fullScreen>false</fullScreen>
+        <visible>true</visible>
+    </initialWindow>
+
+	<!-- The icon the system uses for the application. For at least one resolution,
+	specify the path to a PNG file included in the AIR package. Optional. -->
+	<icon>
+		<image16x16>assets/icons/logo16.png</image16x16>
+		<image32x32>assets/icons/logo32.png</image32x32>
+		<image48x48>assets/icons/logo48.png</image48x48>
+		<image128x128>assets/icons/logo128.png</image128x128>
+		<image512x512>assets/icons/logo512.png</image512x512>
+		<image1024x1024>assets/icons/logo1024.png</image1024x1024>
+	</icon>
+</application>
