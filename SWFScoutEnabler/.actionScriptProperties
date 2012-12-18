@@ -31,6 +31,7 @@
         </excludedEntries>
       </libraryPathEntry>
       <libraryPathEntry kind="3" linkType="1" path="/RenaunsCoreLib/bin/RenaunsCoreLib.swc" useDefaultLinkType="false"/>
+      <libraryPathEntry kind="3" linkType="1" path="flascc/LzmaSWF.swc" useDefaultLinkType="false"/>
     </libraryPath>
     <sourceAttachmentPath/>
   </compiler>
@@ -57,4 +58,3 @@
     </buildTarget>
   </buildTargets>
 </actionScriptProperties>
-

@@ -24,6 +24,10 @@ OTHER DEALINGS IN THE SOFTWARE.
 */
 package app.core
 {
+import com.renaun.flascc.CModule;
+import com.renaun.flascc.ram;
+import com.renaun.flascc_interface.flascc_compressLZMA;
+
 import flash.events.ErrorEvent;
 import flash.events.EventDispatcher;
 import flash.filesystem.File;
@@ -88,10 +92,28 @@ public class SWFTagHelper extends EventDispatcher
 		{
 			// Uncompress the rest of the file with LZMA	
 			var lzmaCompressedLength:int = fileStream.readUnsignedInt();
+			// LZMA Properties
+			uncompressedBytes.writeByte(fileStream.readByte());
+			uncompressedBytes.writeByte(fileStream.readByte());
+			uncompressedBytes.writeByte(fileStream.readByte());
+			uncompressedBytes.writeByte(fileStream.readByte());
+			uncompressedBytes.writeByte(fileStream.readByte());
+			uncompressedBytes.writeUnsignedInt(len-8);
+			uncompressedBytes.writeUnsignedInt(0);
 			// Uncompress the rest of the file with zlib
-			fileStream.readBytes(uncompressedBytes);
+			fileStream.position = 17;
+			fileStream.readBytes(uncompressedBytes, 13);
 			out("Rest of the ZWS bytes length: " + uncompressedBytes.length);
-			uncompressedBytes.uncompress(CompressionAlgorithm.LZMA);
+			try
+			{
+				uncompressedBytes.position = 0;
+				uncompressedBytes.uncompress(CompressionAlgorithm.LZMA);
+			}
+			catch (error:Error)
+			{
+				dispatchEvent(new ErrorEvent(ErrorEvent.ERROR, false, false, "Error[LZMA]: " + error.message));
+				return "";
+			}
 			out("ZWS Bytes length after: " + uncompressedBytes.length);
 		}
 		else
@@ -106,6 +128,7 @@ public class SWFTagHelper extends EventDispatcher
 		var frameSizeBits:int = uncompressedBytes.readUnsignedByte();
 		var nBits:int = ((frameSizeBits & 0xff) >> 3);
 		var nBytes:Number = (7 + (nBits*4) - 3) / 8;
+		// Write the FrameSize, FrameRate, and FrameCount back in
 		tempBytes.writeBytes(uncompressedBytes, uncompressedBytes.position-1, 1+nBytes+4);
 		uncompressedBytes.position += nBytes+4;
 		
@@ -117,8 +140,12 @@ public class SWFTagHelper extends EventDispatcher
 			readSWFTag(uncompressedBytes, ret);
 			if (ret.tagType == 93)
 			{
-				dispatchEvent(new ErrorEvent(ErrorEvent.ERROR, false, false, "SWF Enabled: already has EnableTelemetry tag"));
-				return "";
+				//dispatchEvent(new ErrorEvent(ErrorEvent.ERROR, false, false, "SWF Enabled: already has EnableTelemetry tag"));
+				//return "";
+				
+				// Write Tag
+				tempBytes.writeBytes(uncompressedBytes, uncompressedBytes.position, ret.tagLength);
+				uncompressedBytes.position += ret.tagLength;
 			}
 			else if (ret.tagType == 92)
 			{
@@ -149,6 +176,7 @@ public class SWFTagHelper extends EventDispatcher
 				{
 					out("THIS SWF IS AS2");
 				}
+				
 				
 				out("ENABLE SCOUT: " + tempBytes.length);
 				// Enable Scout SWF Tag
@@ -196,8 +224,6 @@ public class SWFTagHelper extends EventDispatcher
 			}
 			isFirstTag = false;
 		}
-		// Start cleaning up and writing file to disk
-		uncompressedBytes.length = 0;
 		
 		var newFile:File = new File(file.nativePath.replace(".swf",fileSuffix+".swf"));
 		fileStream = new FileStream();
@@ -217,13 +243,36 @@ public class SWFTagHelper extends EventDispatcher
 			out("tempBytesCOMPRESSED.length: " + tempBytes.length);
 		}
 		else if (sig == "ZWS")
-		{
-			tempBytes.compress(CompressionAlgorithm.LZMA);
-			fileStream.writeUnsignedInt(tempBytes.length-5);
+		{			
+			// Setup bytes to be written to Flascc memory
+			var tempBytesTempPos:int = tempBytes.position;
+			tempBytes.position = 0;
+			var tempBytesPtr:int = CModule.malloc(tempBytes.length);
+			CModule.writeBytes(tempBytesPtr, tempBytes.length, tempBytes);
+			
+			// USING Flascc to convert the SWF to LZMA with proper properties
+			var outBytesPtr:int = CModule.malloc((tempBytes.length*2) + 8 + 4 + 5);
+			//CModule.writeBytes(tempBytesPtr, tempBytes.length, tempBytes);
+			flascc_compressLZMA(tempBytesLength+8, tempBytesPtr, outBytesPtr);
+			
+			ram.endian = Endian.LITTLE_ENDIAN;
+			ram.position = outBytesPtr;
+			var compressedBytesLength:int = ram.readUnsignedInt();
+			tempBytes.length = 0;
+			ram.readBytes(tempBytes, 0, compressedBytesLength+5);
+			
+			CModule.free(outBytesPtr);
+			CModule.free(tempBytesPtr);
+			
+			//tempBytes.compress(CompressionAlgorithm.LZMA);
+			//trace("1a: " +  compressedBytesLength);
+			fileStream.writeUnsignedInt(compressedBytesLength-13);
+			//trace("1: " +  tempBytes.length);
 		}
 		
 		fileStream.writeBytes(tempBytes);
-		out("FileStream.size: " + newFile.size);
+		
+		out("FileStream.size: " + newFile.size + " - " + (tempBytesLength+8) + " - " + (tempBytes.length-13));
 		fileStream.close();
 		tempBytes.length = 0;
 		return newFile.nativePath;
@@ -269,8 +318,8 @@ public class SWFTagHelper extends EventDispatcher
 		}
 		ret.tagLength += 2;
 		readBytes.position = origPos;
-		
-		out("tagType; " + ret.tagType + " tagLength: " + ret.tagLength + " pos["+readBytes.position+"]");
+		if (ret.tagType<80)
+		out("tagType: " + ret.tagType + " tagLength: " + ret.tagLength + " pos["+readBytes.position+"]");
 		return ret;
 	}
 	

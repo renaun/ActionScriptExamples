@@ -3,7 +3,7 @@
 	<id>SWFScoutEnabler</id>
 	<filename>SWFScoutEnabler</filename>
 	<name>SWF Scout Enabler</name>
-	<versionNumber>1.0.2</versionNumber>
+	<versionNumber>1.0.4</versionNumber>
 	<description>Adds the Adobe Scout advanced telemetry SWF tag to a SWF file.</description>
 	<copyright>Renaun Erickson</copyright>
 	<!-- Settings for the application's initial window. Required. -->

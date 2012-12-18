@@ -69,7 +69,7 @@ public class Main extends FeathersControl
 	
 	private function addedToStageHandler():void
 	{
-		addChildren()
+		addChildren();
 	}
 	
 	protected function addChildren():void
