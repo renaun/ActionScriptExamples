@@ -199,5 +199,42 @@ public class Main extends FeathersControl
 		(errorText.textRendererProperties.textFormat as BitmapFontTextFormat).color = 0xDD3333;
 		errorText.text = event.text;
 	}
+
+
+// -- GETTERS AND SETTERS -- //
+	public function get instructionsLabel():Label
+	{
+		return this.appCountLabel;
+	}
+
+	public function set instructionsLabel(objLabel:Label):void
+	{
+		this.appCountLabel = objLabel;
+		this.positionManager.invalidate(this.appCountLabel);
+	}
+	
+	
+	public function get password():String
+	{
+		return this.password.text;
+	}
+	
+	public function set password(strValue:String):void
+	{
+		this.password.text = strValue;
+		this.positionManager.invalidate(this.password);
+	}
+	
+	
+	public function get suffix():String
+	{
+		return this.suffix.text;
+	}
+	
+	public function set suffix(strValue:String):void
+	{
+		this.suffix.text = strValue;
+		this.positionManager.invalidate(this.suffix);
+	}
 }
 }
