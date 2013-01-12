@@ -24,25 +24,29 @@ OTHER DEALINGS IN THE SOFTWARE.
 */
 package
 {
-import com.renaun.core.StarlingWebMainSprite;
+	import com.renaun.core.StarlingWebMainSprite;
+	import flash.desktop.NativeApplication;
 
-import flash.desktop.ClipboardFormats;
-import flash.desktop.NativeDragManager;
-import flash.display.Sprite;
-import flash.events.InvokeEvent;
-import flash.events.NativeDragEvent;
-import flash.filesystem.File;
+	import flash.desktop.ClipboardFormats;
+	import flash.desktop.NativeDragManager;
+	import flash.display.Sprite;
+	import flash.events.InvokeEvent;
+	import flash.events.NativeDragEvent;
+	import flash.filesystem.File;
 
-import app.display.Main;
+	import app.display.Main;
 
-[SWF(width="720",height="400",frameRate="60",backgroundColor="#404040")]
+	[SWF(width="720",height="400",frameRate="60",backgroundColor="#404040")]
 	public class SWFScoutEnabler extends StarlingWebMainSprite
 	{
+		private	var	blnStarlingIsReady	:Boolean		,
+					vecArgs				:Vector.<String>;
+		
 		public function SWFScoutEnabler()
 		{
-			super(Main);
+			NativeApplication.nativeApplication.addEventListener(InvokeEvent.INVOKE, this.invokeHandler);
 			
-			this.addEventListener(InvokeEvent.INVOKE, this.invokeHandler);
+			super(Main);
 		}
 		
 		private var mc:Sprite;
@@ -58,6 +62,14 @@ import app.display.Main;
 			
 			mc.addEventListener(NativeDragEvent.NATIVE_DRAG_ENTER, dragEnterHandler);
 			mc.addEventListener(NativeDragEvent.NATIVE_DRAG_DROP, dragDropHandler);
+			
+			this.blnStarlingIsReady = true;
+			
+			if(this.vecArgs			!== null
+			&& this.vecArgs.length	!== 0)
+			{
+				this.parseArguments();
+			}
 		}
 		
 		protected function dragEnterHandler(event:NativeDragEvent):void
@@ -79,7 +91,22 @@ import app.display.Main;
 		
 		private function invokeHandler(evt:InvokeEvent):void
 		{
-			var args			:Array				= evt.arguments	,
+			if(evt.arguments		!== null
+			&& evt.arguments.length	!== 0)
+			{
+				this.vecArgs = Vector.<String>(evt.arguments);
+				
+				if(this.blnStarlingIsReady === true)
+				{
+					this.parseArguments();
+				}
+			}
+		}
+		
+		
+		private	function parseArguments():void
+		{
+			var args			:Vector.<String>	= this.vecArgs	,
 				i				:int				= -1			,
 				intLength		:int				= args.length	,
 				objCurrentFile	:File								,
@@ -94,13 +121,16 @@ import app.display.Main;
 				
 				switch(strCurrentArg)
 				{
+					case '--no-suffix':
+					{
+						(this.mainStarlingSpirte as Main).suffixText = '';
+					}; break;
+					
 					case '--password':
 					{
 						if(intLength >= i + 1)
 						{
-							(this.mainStarlingSpirte as Main).password = args[(i + 1 as int)];
-							++i;
-							continue;
+							(this.mainStarlingSpirte as Main).passwordText = args[++i];
 						}
 					};
 					break;
@@ -109,34 +139,45 @@ import app.display.Main;
 					{
 						if(intLength >= i + 1)
 						{
-							(this.mainStarlingSpirte as Main).suffix = args[(i + 1 as int)];
+							(this.mainStarlingSpirte as Main).suffixText = args[++i];
 						}
 					}; break;
-
+					
+					case '-h':
 					case '--help':
 					{
 						strInstructions	=	'Usage Instructions:\n' +
-											'\n' +
 											'SWFScoutEnabler [args] {InputFileName} ...\n' +
-											'\n' +
-											'-h, --help                     :Help\n' +
-											'\n' +
-											'--password mysecretpassword    :Set your telemetry-password';
+											'-h, --help                      :Help\n' +
+											'--password   mysecretpassword   :Sets your telemetry-password\n'+
+											'--suffix     _scout             :Sets a suffix for your SWF, e.g. MyFile_scout.swf\n' +
+											'--no-suffix                     :Disables the suffix';
 						
 						(this.mainStarlingSpirte as Main).instructionsLabel.text = strInstructions;
 					}; return;
 					
 					default:
 					{
-						objCurrentFile = new File(args[i]);
-				
-						if(objCurrentFile.exists === true)
+						try
 						{
-							(mainStarlingSpirte as Main).processFile(objCurrentFile);
+							objCurrentFile = new File(args[i]);
+					
+							if(objCurrentFile.exists === true)
+							{
+								(mainStarlingSpirte as Main).processFile(objCurrentFile);
+							}
+						}
+						catch(e:ArgumentError)
+						{
+							/**
+							 * just skip this invalid/unknown argument
+							 */
 						}
 					};
 				}
 			}
+			
+			NativeApplication.nativeApplication.exit();
 		}
 	}
 }
