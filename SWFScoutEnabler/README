@@ -12,3 +12,5 @@ Implementation based off of the python script found here:
 https://github.com/adamcath/telemetry-utils/blob/master/add-opt-in.py
 
 Support for AS2 SWFs has a bug in Adobe Scout at the moment.
+
+Download the SWFScoutEnabler AIR application at http://renaun.com/air/SWFScoutEnabler.air
