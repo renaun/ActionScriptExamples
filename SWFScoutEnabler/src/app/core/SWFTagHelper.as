@@ -39,14 +39,16 @@ import flash.utils.Endian;
 
 public class SWFTagHelper extends EventDispatcher
 {
-	public function SWFTagHelper(file:File)
+	public function SWFTagHelper(file:File, addTelemetryTag:Boolean = true)
 	{
 		this.file = file;
+		this.addTelemetryTag = addTelemetryTag;
 	}
 	
 	public var isScoutable:Boolean = false;
 	public var isCompressed:Boolean = false;
 	public var message:String = "";
+	public var addTelemetryTag:Boolean = true;
 	
 	// SWF Attributes
 	public var sig:String = "";
@@ -135,25 +137,32 @@ public class SWFTagHelper extends EventDispatcher
 		var ret:Object = new Object();
 		ret.tagType = 1;
 		var isFirstTag:Boolean = (version < 8);
+		var checkRemoveTag:Boolean = false;
 		while (ret.tagType > 0)
 		{
 			readSWFTag(uncompressedBytes, ret);
-			if (ret.tagType == 93)
+			if (ret.tagType == 93 && addTelemetryTag)
 			{
-				//dispatchEvent(new ErrorEvent(ErrorEvent.ERROR, false, false, "SWF Enabled: already has EnableTelemetry tag"));
-				//return "";
+				dispatchEvent(new ErrorEvent(ErrorEvent.ERROR, false, false, "SWF Enabled: already has EnableTelemetry tag"));
+				return "";
 				
 				// Write Tag
-				tempBytes.writeBytes(uncompressedBytes, uncompressedBytes.position, ret.tagLength);
+				//tempBytes.writeBytes(uncompressedBytes, uncompressedBytes.position, ret.tagLength);
+				//uncompressedBytes.position += ret.tagLength;
+			}
+			else if (ret.tagType == 93 && !addTelemetryTag)
+			{
+				// Move the byte pointer ahead but don't write out the SWF tag 93
 				uncompressedBytes.position += ret.tagLength;
+				checkRemoveTag = true;
 			}
 			else if (ret.tagType == 92)
 			{
 				dispatchEvent(new ErrorEvent(ErrorEvent.ERROR, false, false, "Can't Enabled: Signed SWFs are not supported"));
 				return "";
 			}
-			else if (ret.tagType == 69
-				|| (isFirstTag && ret.tagType != 69)) // Check for < 8 SWF version with no 69 tag
+			else if (addTelemetryTag && (ret.tagType == 69
+				|| (isFirstTag && ret.tagType != 69))) // Check for < 8 SWF version with no 69 tag
 			{
 				
 				if (!(isFirstTag && ret.tagType != 69))
@@ -223,6 +232,11 @@ public class SWFTagHelper extends EventDispatcher
 				uncompressedBytes.position += ret.tagLength;
 			}
 			isFirstTag = false;
+		}
+		if (!checkRemoveTag && !addTelemetryTag)
+		{
+			dispatchEvent(new ErrorEvent(ErrorEvent.ERROR, false, false, "SWF Disabled: EnableTelemetry tag was not present"));
+			return "";
 		}
 		
 		var newFile:File = new File(file.nativePath.replace(".swf",fileSuffix+".swf"));

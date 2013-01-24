@@ -58,7 +58,8 @@ public class MainTheme  extends DisplayListWatcher
 	[Embed(source="/assets/fonts/SourceSansPro_20.fnt",mimeType="application/octet-stream")]
 	protected static const SSP_20_FONT_XML:Class;
 	
-	protected static const BACKGROUND_COLOR:uint = 0x404040;
+	public static const BACKGROUND_COLOR:uint = 0x404040;
+	public static const BACKGROUND_RED_COLOR:uint = 0x664040;
 	
 	public function MainTheme(root:DisplayObjectContainer, scaleToDPI:Boolean = true)
 	{

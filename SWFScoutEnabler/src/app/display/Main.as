@@ -26,20 +26,21 @@ package app.display
 {
 	import com.renaun.controls.HGroup;
 	import com.renaun.controls.RelativePositionLayoutManager;
-
+	
 	import flash.events.ErrorEvent;
 	import flash.events.Event;
+	import flash.events.MouseEvent;
 	import flash.filesystem.File;
 	import flash.net.SharedObject;
-
+	
 	import app.core.SWFTagHelper;
 	import app.theme.MainTheme;
-
+	
 	import feathers.controls.Label;
 	import feathers.controls.TextInput;
 	import feathers.core.FeathersControl;
 	import feathers.text.BitmapFontTextFormat;
-
+	
 	import starling.display.Image;
 	import starling.display.Quad;
 	import starling.events.TouchEvent;
@@ -67,6 +68,19 @@ package app.display
 		private var settings:SharedObject;
 		private var lastFile:File;
 		
+		private var _addTelemetryTag:Boolean = true;
+		
+		public function get addTelemetryTag():Boolean
+		{
+			return _addTelemetryTag;
+		}
+
+		public function set addTelemetryTag(value:Boolean):void
+		{
+			stage.color = (value) ? MainTheme.BACKGROUND_COLOR : MainTheme.BACKGROUND_RED_COLOR;
+			_addTelemetryTag = value;
+		}
+
 		private function addedToStageHandler():void
 		{
 			addChildren();
@@ -80,6 +94,7 @@ package app.display
 			
 			var renderer:Label = new Label();
 			renderer.text = "SWF Scout Enabler";
+			renderer.addEventListener(TouchEvent.TOUCH, titleClickHandler);
 			addChild(renderer);
 			
 			var sl:Image = new Image(Texture.fromBitmap(new MainTheme.SCOUT_LOGO()));
@@ -88,8 +103,7 @@ package app.display
 			
 			var bg:Quad = new Quad(100, 100, 0x2d2d2d);
 			addChild(bg);
-			
-			
+						
 			var hgroup:HGroup = new HGroup();
 			var suffixLabel:Label = new Label();
 			suffixLabel.text = "File Suffix: ";
@@ -153,6 +167,15 @@ package app.display
 			positionManager.setPosition(errorText, RelativePositionLayoutManager.BOTTOM, 70);
 		}
 		
+		private function titleClickHandler(event:TouchEvent):void
+		{
+			if (event.touches.length > 0 && event.touches[0].phase == TouchPhase.ENDED)
+			{
+				addTelemetryTag = !addTelemetryTag;
+				(event.target as Label).text = (addTelemetryTag) ? "SWF Scout Enabler" : "SWF Scout Disabler";
+			}
+		}
+		
 		private function touchEventHandler(event:TouchEvent):void
 		{
 			if (event.touches.length > 0 && event.touches[0].phase == TouchPhase.ENDED && lastFile)
@@ -181,7 +204,7 @@ package app.display
 				(errorText.textRendererProperties.textFormat as BitmapFontTextFormat).color = 0xffffff;
 				errorText.text = "Processing: " + file.nativePath;
 				lastFile = file;
-				var swfTagHelper:SWFTagHelper = new SWFTagHelper(file);
+				var swfTagHelper:SWFTagHelper = new SWFTagHelper(file, addTelemetryTag);
 				swfTagHelper.addEventListener(ErrorEvent.ERROR, errorHandler);
 				var success:String = swfTagHelper.process(suffix.text, password.text);
 				if (success != "")
