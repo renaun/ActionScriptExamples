@@ -14,5 +14,5 @@ Support for AS2 SWFs has a bug in Adobe Scout at the moment.
 Download the SWFScoutEnabler AIR application at http://renaun.com/air/SWFScoutEnabler.air
 
 Release Notes:
-Version 1.0.6 includes feature to remove telemetry tag
+Version 1.0.7 includes feature to remove telemetry tag
 Version 1.0.5 includes Daniel Bunte (DuncanConroy) updated command line code.

@@ -68,6 +68,16 @@ package app.display
 		private var settings:SharedObject;
 		private var lastFile:File;
 		
+		protected var INSTRUCTIONS_ENABLER:String = "How To Use SWF Scout Enabler:\n\n1. Set File Suffix and Password (optional) input values\n" +
+			"2. Drag SWF into SWF Scout Enabler\n" + "" +
+			"3. Enabled SWF is created in same folder as filename __SUFFIX__.swf\n" +
+			"\nTIPs: To override file set File Suffix to \"\"\nClick on top right image to reprocess last file";
+		protected var INSTRUCTIONS_DISABLER:String = "How To Use SWF Scout Disabler:\n\n1. Set File Suffix input values\n" +
+			"2. Drag SWF into SWF Scout Disabler\n" + "" +
+			"3. Disabled SWF is created in same folder as filename __SUFFIX__.swf\n" +
+			"\nTIPs: To override file set File Suffix to \"\"\nClick on top right image to reprocess last file";
+		protected var currectInstructionText:String = INSTRUCTIONS_ENABLER;
+		
 		private var _addTelemetryTag:Boolean = true;
 		
 		public function get addTelemetryTag():Boolean
@@ -135,10 +145,7 @@ package app.display
 			appCountLabel.textRendererProperties.textFormat = theme.bitmapTextFormat14Grey;
 			(appCountLabel.textRendererProperties.textFormat as BitmapFontTextFormat).align = "center";
 			appCountLabel.textRendererProperties.multiline = true;
-			appCountLabel.text = "How To Use SWF Scout Enabler:\n\n1. Set File Suffix and Password (optional) input values\n" +
-				"2. Drag SWF into SWF Scout Enabler\n" + "" +
-				"3. Enabled SWF is created in same folder as filename + \""+suffix.text+"\" + .swf\n" +
-				"\nTIPs: To override file set File Suffix to \"\"\nClick on top right image to reprocess last file";
+			appCountLabel.text = currectInstructionText.replace("__SUFFIX__", suffix.text);
 			addChild(appCountLabel);
 			
 			errorText = new Label();
@@ -172,6 +179,9 @@ package app.display
 			if (event.touches.length > 0 && event.touches[0].phase == TouchPhase.ENDED)
 			{
 				addTelemetryTag = !addTelemetryTag;
+				currectInstructionText = (addTelemetryTag) ? INSTRUCTIONS_ENABLER : INSTRUCTIONS_DISABLER;
+				
+				appCountLabel.text = currectInstructionText.replace("__SUFFIX__", suffix.text);
 				(event.target as Label).text = (addTelemetryTag) ? "SWF Scout Enabler" : "SWF Scout Disabler";
 			}
 		}
@@ -184,10 +194,7 @@ package app.display
 		
 		private function changeHandler():void
 		{
-			appCountLabel.text = "How To Use SWF Scout Enabler:\n\n1. Set File Suffix and Password (optional) input values\n" +
-				"2. Drag SWF into SWF Scout Enabler\n" + "" +
-				"3. Enabled SWF is created in same folder as filename + \""+suffix.text+"\" + .swf\n" +
-				"\nTIPs: To override file set File Suffix to \"\"\nClick on top right image to reprocess last file";
+			appCountLabel.text = currectInstructionText.replace("__SUFFIX__", suffix.text);
 			
 			positionManager.invalidate(appCountLabel);
 		}
