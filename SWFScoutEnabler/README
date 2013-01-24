@@ -1,9 +1,4 @@
-UPDATE - Daniel Bunte(DuncanConroy)
-A cmd-powered build can be found at: https://docs.google.com/folder/d/0B2rWjDfJ1xAIUXI5d0RjZENCQzA/edit
-If you have an older version of SWFScoutEnabler installed, you'll have to first uninstall it,
-or you'll get an "installation failed" message.
-
-
+Version 1.0.5 includes Daniel Bunte (DuncanConroy) updated command line code.
 
 This AIR application helps you to set the advanced telemetry SWF tag on SWF files. 
 This is useful for pre-existing SWFs or SWF not created with the newer asc2 compiler.
