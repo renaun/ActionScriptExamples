@@ -121,6 +121,11 @@ package
 				
 				switch(strCurrentArg)
 				{
+					case '--disabler':
+					{
+						(this.mainStarlingSpirte as Main).addTelemetryTag = false;
+					}; break;
+					
 					case '--no-suffix':
 					{
 						(this.mainStarlingSpirte as Main).suffixText = '';
@@ -151,7 +156,8 @@ package
 											'-h, --help                      :Help\n' +
 											'--password   mysecretpassword   :Sets your telemetry-password\n'+
 											'--suffix     _scout             :Sets a suffix for your SWF, e.g. MyFile_scout.swf\n' +
-											'--no-suffix                     :Disables the suffix';
+											'--no-suffix                     :Disables the suffix\n' +
+											'--disabler                      :Run in SWF Scout Disabler mode';
 						
 						(this.mainStarlingSpirte as Main).instructionsLabel.text = strInstructions;
 					}; return;
